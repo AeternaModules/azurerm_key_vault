@@ -46,10 +46,10 @@ EOT
     enabled_for_deployment          = optional(bool)
     enabled_for_disk_encryption     = optional(bool)
     enabled_for_template_deployment = optional(bool)
-    public_network_access_enabled   = optional(bool, true)
+    public_network_access_enabled   = optional(bool) # Default: true
     purge_protection_enabled        = optional(bool)
     rbac_authorization_enabled      = optional(bool)
-    soft_delete_retention_days      = optional(number, 90)
+    soft_delete_retention_days      = optional(number) # Default: 90
     tags                            = optional(map(string))
     access_policy = optional(list(object({
       application_id          = optional(string)
