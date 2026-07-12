@@ -60,11 +60,11 @@ EOT
       storage_permissions     = optional(list(string))
       tenant_id               = string
     })))
-    contact = optional(object({
+    contact = optional(list(object({
       email = string
       name  = optional(string)
       phone = optional(string)
-    }))
+    })))
     network_acls = optional(object({
       bypass                     = string
       default_action             = string
@@ -79,22 +79,6 @@ EOT
       )
     ])
     error_message = "Each access_policy list must contain at most 1024 items"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.key_vaults : (
-        can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", v.tenant_id))
-      )
-    ])
-    error_message = "must be a valid UUID"
-  }
-  validation {
-    condition = alltrue([
-      for k, v in var.key_vaults : (
-        v.soft_delete_retention_days == null || (v.soft_delete_retention_days >= 7 && v.soft_delete_retention_days <= 90)
-      )
-    ])
-    error_message = "must be between 7 and 90"
   }
   # --- Unconfirmed validation candidates, derived from azurerm_key_vault's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
@@ -124,6 +108,9 @@ EOT
   #   source:    [from resourcegroups.ValidateName] !matched
   # path: sku_name
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: tenant_id
+  #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
+  #   message:   must be a valid UUID
   # path: access_policy.tenant_id
   #   condition: can(regex("^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$", value))
   #   message:   must be a valid UUID
@@ -140,6 +127,9 @@ EOT
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: network_acls.ip_rules[*]
   #   source:    validation.Any(...) - no translation rule yet, add one
+  # path: soft_delete_retention_days
+  #   condition: value >= 7 && value <= 90
+  #   message:   must be between 7 and 90
   # path: tags
   #   condition: length(value) <= 50
   #   message:   [from tags.Validate: invalid when len(value) > 50]

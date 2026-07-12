@@ -30,7 +30,7 @@ resource "azurerm_key_vault" "key_vaults" {
   }
 
   dynamic "contact" {
-    for_each = each.value.contact != null ? [each.value.contact] : []
+    for_each = each.value.contact != null ? each.value.contact : []
     content {
       email = contact.value.email
       name  = contact.value.name
