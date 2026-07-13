@@ -21,10 +21,10 @@ Optional:
         - application_id (optional)
         - certificate_permissions (optional)
         - key_permissions (optional)
-        - object_id (required)
+        - object_id (optional)
         - secret_permissions (optional)
         - storage_permissions (optional)
-        - tenant_id (required)
+        - tenant_id (optional)
     - contact (block):
         - email (required)
         - name (optional)
@@ -46,19 +46,19 @@ EOT
     enabled_for_deployment          = optional(bool)
     enabled_for_disk_encryption     = optional(bool)
     enabled_for_template_deployment = optional(bool)
-    public_network_access_enabled   = optional(bool) # Default: true
+    public_network_access_enabled   = optional(bool)
     purge_protection_enabled        = optional(bool)
     rbac_authorization_enabled      = optional(bool)
-    soft_delete_retention_days      = optional(number) # Default: 90
+    soft_delete_retention_days      = optional(number)
     tags                            = optional(map(string))
     access_policy = optional(list(object({
       application_id          = optional(string)
       certificate_permissions = optional(list(string))
       key_permissions         = optional(list(string))
-      object_id               = string
+      object_id               = optional(string)
       secret_permissions      = optional(list(string))
       storage_permissions     = optional(list(string))
-      tenant_id               = string
+      tenant_id               = optional(string)
     })))
     contact = optional(list(object({
       email = string
@@ -72,14 +72,6 @@ EOT
       virtual_network_subnet_ids = optional(set(string))
     }))
   }))
-  validation {
-    condition = alltrue([
-      for k, v in var.key_vaults : (
-        v.access_policy == null || (length(v.access_policy) <= 1024)
-      )
-    ])
-    error_message = "Each access_policy list must contain at most 1024 items"
-  }
   # --- Unconfirmed validation candidates, derived from azurerm_key_vault's provider source ---
   # Not auto-enabled: either a bespoke provider validator we can't safely translate,
   # or a path that crosses a list-typed block (needs its own for_each wrapping).
@@ -121,6 +113,14 @@ EOT
   #   source:    [from validate.IsUUIDOrEmpty] !ok
   # path: access_policy.application_id
   #   source:    [from validate.IsUUIDOrEmpty] err != nil
+  # path: access_policy.certificate_permissions[*]
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: access_policy.key_permissions[*]
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: access_policy.secret_permissions[*]
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
+  # path: access_policy.storage_permissions[*]
+  #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: network_acls.default_action
   #   source:    validation.StringInSlice value list is not a literal []string - likely a generated PossibleValuesFor*() helper; resolve separately
   # path: network_acls.bypass
