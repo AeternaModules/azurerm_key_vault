@@ -3,16 +3,15 @@ resource "azurerm_key_vault" "key_vaults" {
 
   location                        = each.value.location
   name                            = each.value.name
+  rbac_authorization_enabled      = each.value.rbac_authorization_enabled
   resource_group_name             = each.value.resource_group_name
   sku_name                        = each.value.sku_name
   tenant_id                       = each.value.tenant_id
-  enable_rbac_authorization       = each.value.enable_rbac_authorization
   enabled_for_deployment          = each.value.enabled_for_deployment
   enabled_for_disk_encryption     = each.value.enabled_for_disk_encryption
   enabled_for_template_deployment = each.value.enabled_for_template_deployment
   public_network_access_enabled   = each.value.public_network_access_enabled
   purge_protection_enabled        = each.value.purge_protection_enabled
-  rbac_authorization_enabled      = each.value.rbac_authorization_enabled
   soft_delete_retention_days      = each.value.soft_delete_retention_days
   tags                            = each.value.tags
 
@@ -26,15 +25,6 @@ resource "azurerm_key_vault" "key_vaults" {
       secret_permissions      = access_policy.value.secret_permissions
       storage_permissions     = access_policy.value.storage_permissions
       tenant_id               = access_policy.value.tenant_id
-    }
-  }
-
-  dynamic "contact" {
-    for_each = each.value.contact != null ? each.value.contact : []
-    content {
-      email = contact.value.email
-      name  = contact.value.name
-      phone = contact.value.phone
     }
   }
 

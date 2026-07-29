@@ -6,14 +6,6 @@ output "key_vaults_access_policy" {
   description = "Map of access_policy values across all key_vaults, keyed the same as var.key_vaults"
   value       = { for k, v in azurerm_key_vault.key_vaults : k => v.access_policy if v.access_policy != null && length(v.access_policy) > 0 }
 }
-output "key_vaults_contact" {
-  description = "Map of contact values across all key_vaults, keyed the same as var.key_vaults"
-  value       = { for k, v in azurerm_key_vault.key_vaults : k => v.contact if v.contact != null && length(v.contact) > 0 }
-}
-output "key_vaults_enable_rbac_authorization" {
-  description = "Map of enable_rbac_authorization values across all key_vaults, keyed the same as var.key_vaults"
-  value       = { for k, v in azurerm_key_vault.key_vaults : k => v.enable_rbac_authorization if v.enable_rbac_authorization != null }
-}
 output "key_vaults_enabled_for_deployment" {
   description = "Map of enabled_for_deployment values across all key_vaults, keyed the same as var.key_vaults"
   value       = { for k, v in azurerm_key_vault.key_vaults : k => v.enabled_for_deployment if v.enabled_for_deployment != null }

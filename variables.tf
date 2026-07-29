@@ -4,17 +4,16 @@ Map of key_vaults, attributes below
 Required:
     - location
     - name
+    - rbac_authorization_enabled
     - resource_group_name
     - sku_name
     - tenant_id
 Optional:
-    - enable_rbac_authorization
     - enabled_for_deployment
     - enabled_for_disk_encryption
     - enabled_for_template_deployment
     - public_network_access_enabled
     - purge_protection_enabled
-    - rbac_authorization_enabled
     - soft_delete_retention_days
     - tags
     - access_policy (block):
@@ -25,10 +24,6 @@ Optional:
         - secret_permissions (optional)
         - storage_permissions (optional)
         - tenant_id (optional)
-    - contact (block):
-        - email (required)
-        - name (optional)
-        - phone (optional)
     - network_acls (block):
         - bypass (required)
         - default_action (required)
@@ -39,16 +34,15 @@ EOT
   type = map(object({
     location                        = string
     name                            = string
+    rbac_authorization_enabled      = bool
     resource_group_name             = string
     sku_name                        = string
     tenant_id                       = string
-    enable_rbac_authorization       = optional(bool)
     enabled_for_deployment          = optional(bool)
     enabled_for_disk_encryption     = optional(bool)
     enabled_for_template_deployment = optional(bool)
     public_network_access_enabled   = optional(bool)
     purge_protection_enabled        = optional(bool)
-    rbac_authorization_enabled      = optional(bool)
     soft_delete_retention_days      = optional(number)
     tags                            = optional(map(string))
     access_policy = optional(list(object({
@@ -59,11 +53,6 @@ EOT
       secret_permissions      = optional(list(string))
       storage_permissions     = optional(list(string))
       tenant_id               = optional(string)
-    })))
-    contact = optional(list(object({
-      email = string
-      name  = optional(string)
-      phone = optional(string)
     })))
     network_acls = optional(object({
       bypass                     = string
