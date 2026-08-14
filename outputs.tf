@@ -36,7 +36,7 @@ output "key_vaults_name" {
 }
 output "key_vaults_network_acls" {
   description = "Map of network_acls values across all key_vaults, keyed the same as var.key_vaults"
-  value       = { for k, v in azurerm_key_vault.key_vaults : k => v.network_acls if v.network_acls != null && length(v.network_acls) > 0 }
+  value       = { for k, v in azurerm_key_vault.key_vaults : k => one(v.network_acls) if v.network_acls != null && length(v.network_acls) > 0 }
 }
 output "key_vaults_public_network_access_enabled" {
   description = "Map of public_network_access_enabled values across all key_vaults, keyed the same as var.key_vaults"
